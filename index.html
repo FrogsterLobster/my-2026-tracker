@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My 2026 Habit Tracker</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #fff5f7 0%, #f0fdf4 100%);
+            padding: 20px 10px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .header h1 {
+            color: #ec4899;
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            color: #86efac;
+            font-size: 1em;
+            font-weight: 600;
+        }
+        
+        .decorative-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+            font-size: 1.5em;
+        }
+        
+        .habit-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fce7f3 0%, #dcfce7 100%);
+            border-radius: 15px;
+            border: 2px solid #fbcfe8;
+        }
+        
+        .habit-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .habit-title span {
+            font-size: 1.3em;
+        }
+        
+        .habit-title h2 {
+            color: #db2777;
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+        
+        .year-calendar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        
+        .month-container {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #fbcfe8;
+        }
+        
+        .month-header {
+            text-align: center;
+            color: #ec4899;
+            font-weight: 700;
+            font-size: 0.85em;
+            margin-bottom: 6px;
+        }
+        
+        .weekday-labels {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 3px;
+        }
+        
+        .weekday-label {
+            text-align: center;
+            color: #86efac;
+            font-weight: 600;
+            font-size: 0.65em;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        
+        .day-box {
+            aspect-ratio: 1;
+            background: white;
+            border: 1.5px solid #fbcfe8;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .day-box.empty {
+            background: transparent;
+            border: none;
+            cursor: default;
+        }
+        
+        .day-box:not(.empty):hover {
+            transform: scale(1.1);
+            border-color: #ec4899;
+        }
+        
+        .day-box.checked {
+            background: linear-gradient(135deg, #ec4899, #86efac);
+            color: white;
+            border-color: #ec4899;
+        }
+        
+        .day-box.checked::after {
+            content: '✓';
+            position: absolute;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .stats {
+            margin-top: 10px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-box {
+            background: white;
+            padding: 6px 12px;
+            border-radius: 10px;
+            border: 2px solid #86efac;
+            font-size: 0.85em;
+        }
+        
+        .stat-box span {
+            color: #10b981;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+        
+        .notes-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            border: 2px dashed #fbcfe8;
+        }
+        
+        .notes-section h3 {
+            color: #ec4899;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1em;
+        }
+        
+        .add-reflection-btn {
+            background: linear-gradient(135deg, #ec4899, #86efac);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        
+        .add-reflection-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(236, 72, 153, 0.3);
+        }
+        
+        .reflections-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .reflection-card {
+            background: linear-gradient(135deg, #fce7f3 0%, #dcfce7 100%);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #fbcfe8;
+            position: relative;
+        }
+        
+        .reflection-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .reflection-month {
+            color: #db2777;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+        
+        .delete-reflection {
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .delete-reflection:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        .reflection-content {
+            color: #374151;
+            font-size: 0.85em;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        
+        .reflection-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .reflection-modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-content h3 {
+            color: #ec4899;
+            margin-bottom: 15px;
+        }
+        
+        .modal-content select,
+        .modal-content textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #fbcfe8;
+            border-radius: 8px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        
+        .modal-content textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .modal-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-btn.save {
+            background: linear-gradient(135deg, #ec4899, #86efac);
+            color: white;
+        }
+        
+        .modal-btn.cancel {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        
+        .modal-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .motivational-quote {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fce7f3, #dcfce7);
+            border-radius: 15px;
+            border: 2px solid #86efac;
+        }
+        
+        .motivational-quote p {
+            color: #db2777;
+            font-size: 1em;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .weekly-calendar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 10px;
+        }
+
+        .week-box {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #fbcfe8;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .week-box:hover {
+            transform: scale(1.05);
+            border-color: #ec4899;
+        }
+
+        .week-box.checked {
+            background: linear-gradient(135deg, #ec4899, #86efac);
+            color: white;
+            border-color: #ec4899;
+        }
+
+        .week-box .week-number {
+            font-weight: 700;
+            font-size: 0.95em;
+            margin-bottom: 3px;
+        }
+
+        .week-box .week-dates {
+            font-size: 0.7em;
+            opacity: 0.8;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ My 2026 Habit Tracker ✨</h1>
+            <p>Building a Healthier, Happier Me</p>
+            <div class="decorative-icons">
+                <span>🌸</span>
+                <span>💚</span>
+                <span>🌿</span>
+                <span>💗</span>
+                <span>🦋</span>
+            </div>
+        </div>
+
+        <!-- Daily Water Intake -->
+        <div class="habit-section">
+            <div class="habit-title">
+                <span>💧</span>
+                <h2>Daily Water Intake (1,855ml)</h2>
+            </div>
+            <div class="year-calendar" id="water-calendar"></div>
+            <div class="stats">
+                <div class="stat-box">Days Completed: <span id="water-count">0</span>/365</div>
+                <div class="stat-box">Current Streak: <span id="water-streak">0</span> days</div>
+            </div>
+        </div>
+
+        <!-- Weekly Physical Activity -->
+        <div class="habit-section">
+            <div class="habit-title">
+                <span>🏃‍♀️</span>
+                <h2>Weekly Physical Activity (Pole/Heels/Gym)</h2>
+            </div>
+            <div class="weekly-calendar" id="activity-calendar"></div>
+            <div class="stats">
+                <div class="stat-box">Weeks Completed: <span id="activity-count">0</span>/52</div>
+                <div class="stat-box">Current Streak: <span id="activity-streak">0</span> weeks</div>
+            </div>
+        </div>
+
+        <!-- Weekly Journaling -->
+        <div class="habit-section">
+            <div class="habit-title">
+                <span>📔</span>
+                <h2>Weekly Physical Journaling</h2>
+            </div>
+            <div class="weekly-calendar" id="journal-calendar"></div>
+            <div class="stats">
+                <div class="stat-box">Weeks Completed: <span id="journal-count">0</span>/52</div>
+                <div class="stat-box">Current Streak: <span id="journal-streak">0</span> weeks</div>
+            </div>
+        </div>
+
+        <!-- Daily Affirmations -->
+        <div class="habit-section">
+            <div class="habit-title">
+                <span>💭</span>
+                <h2>Daily Affirmations</h2>
+            </div>
+            <div class="year-calendar" id="affirmation-calendar"></div>
+            <div class="stats">
+                <div class="stat-box">Days Completed: <span id="affirmation-count">0</span>/365</div>
+                <div class="stat-box">Current Streak: <span id="affirmation-streak">0</span> days</div>
+            </div>
+        </div>
+
+        <!-- Daily Creative Hobbies -->
+        <div class="habit-section">
+            <div class="habit-title">
+                <span>🎨</span>
+                <h2>Daily Creative Hobbies (Guitar/Ukulele/Kalimba/Singing/Art/Crochet/Knitting)</h2>
+            </div>
+            <div class="year-calendar" id="hobby-calendar"></div>
+            <div class="stats">
+                <div class="stat-box">Days Completed: <span id="hobby-count">0</span>/365</div>
+                <div class="stat-box">Current Streak: <span id="hobby-streak">0</span> days</div>
+            </div>
+        </div>
+
+        <!-- No Heat Styling -->
+        <div class="habit-section">
+            <div class="habit-title">
+                <span>💆‍♀️</span>
+                <h2>No Heat Styling (6 Months - Jan to Jun)</h2>
+            </div>
+            <div class="year-calendar" id="hair-calendar"></div>
+            <div class="stats">
+                <div class="stat-box">Days Completed: <span id="hair-count">0</span>/181</div>
+                <div class="stat-box">Progress: <span id="hair-progress">0</span>%</div>
+            </div>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="notes-section">
+            <h3>📝 Monthly Reflections Board</h3>
+            <button class="add-reflection-btn" onclick="openReflectionModal()">+ Add Monthly Reflection</button>
+            <div class="reflections-board" id="reflections-board">
+                <!-- Reflection cards will be added here -->
+            </div>
+        </div>
+
+        <!-- Reflection Modal -->
+        <div class="reflection-modal" id="reflection-modal">
+            <div class="modal-content">
+                <h3>Add Monthly Reflection</h3>
+                <select id="reflection-month">
+                    <option value="">Select Month</option>
+                    <option value="January 2026">January 2026</option>
+                    <option value="February 2026">February 2026</option>
+                    <option value="March 2026">March 2026</option>
+                    <option value="April 2026">April 2026</option>
+                    <option value="May 2026">May 2026</option>
+                    <option value="June 2026">June 2026</option>
+                    <option value="July 2026">July 2026</option>
+                    <option value="August 2026">August 2026</option>
+                    <option value="September 2026">September 2026</option>
+                    <option value="October 2026">October 2026</option>
+                    <option value="November 2026">November 2026</option>
+                    <option value="December 2026">December 2026</option>
+                </select>
+                <textarea id="reflection-text" placeholder="What worked well this month? What challenges did I face? What am I proud of?"></textarea>
+                <div class="modal-buttons">
+                    <button class="modal-btn cancel" onclick="closeReflectionModal()">Cancel</button>
+                    <button class="modal-btn save" onclick="saveReflection()">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Motivational Quote -->
+        <div class="motivational-quote">
+            <p>"This is not about being perfect. This is about being present, making conscious choices, and treating myself with love and respect throughout 2026." 🌸💚</p>
+        </div>
+    </div>
+
+    <script>
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+        const weekdayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+        function getDaysInMonth(year, month) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+
+        function getFirstDayOfMonth(year, month) {
+            return new Date(year, month, 1).getDay();
+        }
+
+        function createYearCalendar(elementId, year, monthsToShow = 12) {
+            const calendar = document.getElementById(elementId);
+            calendar.innerHTML = '';
+            
+            for (let month = 0; month < monthsToShow; month++) {
+                const monthContainer = document.createElement('div');
+                monthContainer.className = 'month-container';
+                
+                const monthHeader = document.createElement('div');
+                monthHeader.className = 'month-header';
+                monthHeader.textContent = monthNames[month];
+                monthContainer.appendChild(monthHeader);
+                
+                const weekdayLabels = document.createElement('div');
+                weekdayLabels.className = 'weekday-labels';
+                weekdayNames.forEach(day => {
+                    const label = document.createElement('div');
+                    label.className = 'weekday-label';
+                    label.textContent = day;
+                    weekdayLabels.appendChild(label);
+                });
+                monthContainer.appendChild(weekdayLabels);
+                
+                const calendarGrid = document.createElement('div');
+                calendarGrid.className = 'calendar-grid';
+                
+                const firstDay = getFirstDayOfMonth(year, month);
+                const daysInMonth = getDaysInMonth(year, month);
+                
+                // Add empty boxes for days before the first day
+                for (let i = 0; i < firstDay; i++) {
+                    const emptyBox = document.createElement('div');
+                    emptyBox.className = 'day-box empty';
+                    calendarGrid.appendChild(emptyBox);
+                }
+                
+                // Add day boxes
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayBox = document.createElement('div');
+                    dayBox.className = 'day-box';
+                    dayBox.textContent = day;
+                    dayBox.dataset.date = `${year}-${month + 1}-${day}`;
+                    dayBox.addEventListener('click', function() {
+                        if (!this.classList.contains('empty')) {
+                            this.classList.toggle('checked');
+                            updateStats(elementId);
+                            saveCheckedDates(elementId);
+                        }
+                    });
+                    calendarGrid.appendChild(dayBox);
+                }
+                
+                monthContainer.appendChild(calendarGrid);
+                calendar.appendChild(monthContainer);
+            }
+        }
+
+        function createWeeklyCalendar(elementId, year) {
+            const calendar = document.getElementById(elementId);
+            calendar.innerHTML = '';
+            
+            let currentDate = new Date(year, 0, 1);
+            const endDate = new Date(year, 11, 31);
+            let weekNumber = 1;
+            
+            while (currentDate <= endDate) {
+                const weekStart = new Date(currentDate);
+                const weekEnd = new Date(currentDate);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+                
+                if (weekEnd > endDate) {
+                    weekEnd.setTime(endDate.getTime());
+                }
+                
+                const weekBox = document.createElement('div');
+                weekBox.className = 'week-box';
+                weekBox.dataset.week = weekNumber;
+                
+                const weekNum = document.createElement('div');
+                weekNum.className = 'week-number';
+                weekNum.textContent = `Week ${weekNumber}`;
+                
+                const weekDates = document.createElement('div');
+                weekDates.className = 'week-dates';
+                weekDates.textContent = `${weekStart.toLocaleDateString('en-GB', {day: 'numeric', month: 'short'})} - ${weekEnd.toLocaleDateString('en-GB', {day: 'numeric', month: 'short'})}`;
+                
+                weekBox.appendChild(weekNum);
+                weekBox.appendChild(weekDates);
+                
+                weekBox.addEventListener('click', function() {
+                    this.classList.toggle('checked');
+                    updateWeeklyStats(elementId);
+                    saveCheckedWeeks(elementId);
+                });
+                
+                calendar.appendChild(weekBox);
+                
+                currentDate.setDate(currentDate.getDate() + 7);
+                weekNumber++;
+            }
+        }
+
+        function updateStats(calendarId) {
+            const calendar = document.getElementById(calendarId);
+            const boxes = calendar.querySelectorAll('.day-box:not(.empty)');
+            const checkedBoxes = calendar.querySelectorAll('.day-box.checked');
+            
+            const habitName = calendarId.replace('-calendar', '');
+            const countElement = document.getElementById(habitName + '-count');
+            const streakElement = document.getElementById(habitName + '-streak');
+            
+            if (countElement) {
+                countElement.textContent = checkedBoxes.length;
+            }
+            
+            // Calculate streak - simpler approach
+            let currentStreak = 0;
+            
+            // Get today's date
+            const today = new Date();
+            const todayStr = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+            
+            // Build a sorted array of all checked dates
+            const checkedDates = [];
+            checkedBoxes.forEach(box => {
+                checkedDates.push(box.dataset.date);
+            });
+            
+            // Sort dates in descending order (newest first)
+            checkedDates.sort((a, b) => {
+                const dateA = new Date(a);
+                const dateB = new Date(b);
+                return dateB - dateA;
+            });
+            
+            // Calculate consecutive days from the most recent checked date
+            if (checkedDates.length > 0) {
+                let checkDate = new Date(checkedDates[0]);
+                
+                for (let i = 0; i < checkedDates.length; i++) {
+                    const currentDate = new Date(checkedDates[i]);
+                    const expectedDateStr = `${checkDate.getFullYear()}-${checkDate.getMonth() + 1}-${checkDate.getDate()}`;
+                    const currentDateStr = checkedDates[i];
+                    
+                    if (expectedDateStr === currentDateStr) {
+                        currentStreak++;
+                        checkDate.setDate(checkDate.getDate() - 1);
+                    } else {
+                        break;
+                    }
+                }
+            }
+            
+            if (streakElement) {
+                streakElement.textContent = currentStreak;
+            }
+            
+            // Update hair progress percentage
+            if (calendarId === 'hair-calendar') {
+                const progressElement = document.getElementById('hair-progress');
+                if (progressElement) {
+                    const percentage = Math.round((checkedBoxes.length / 181) * 100);
+                    progressElement.textContent = percentage;
+                }
+            }
+        }
+
+        function updateWeeklyStats(calendarId) {
+            const calendar = document.getElementById(calendarId);
+            const boxes = calendar.querySelectorAll('.week-box');
+            const checkedBoxes = calendar.querySelectorAll('.week-box.checked');
+            
+            const habitName = calendarId.replace('-calendar', '');
+            const countElement = document.getElementById(habitName + '-count');
+            const streakElement = document.getElementById(habitName + '-streak');
+            
+            if (countElement) {
+                countElement.textContent = checkedBoxes.length;
+            }
+            
+            // Calculate streak - count backwards from the last checked week
+            let currentStreak = 0;
+            
+            // Get all checked week numbers
+            const checkedWeeks = [];
+            checkedBoxes.forEach(box => {
+                checkedWeeks.push(parseInt(box.dataset.week));
+            });
+            
+            // Sort in descending order (highest week number first)
+            checkedWeeks.sort((a, b) => b - a);
+            
+            // Count consecutive weeks
+            if (checkedWeeks.length > 0) {
+                let expectedWeek = checkedWeeks[0];
+                
+                for (let i = 0; i < checkedWeeks.length; i++) {
+                    if (checkedWeeks[i] === expectedWeek) {
+                        currentStreak++;
+                        expectedWeek--;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            
+            if (streakElement) {
+                streakElement.textContent = currentStreak;
+            }
+        }
+
+        // Initialize calendars for 2026
+        createYearCalendar('water-calendar', 2026);
+        createYearCalendar('affirmation-calendar', 2026);
+        createYearCalendar('hobby-calendar', 2026); // Now showing full year!
+        createYearCalendar('hair-calendar', 2026, 6); // Only January to June
+        createWeeklyCalendar('activity-calendar', 2026);
+        createWeeklyCalendar('journal-calendar', 2026);
+
+        // Load saved data
+        loadAllData();
+
+        // Save and Load Functions
+        function saveData(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function loadData(key) {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : null;
+        }
+
+        function loadAllData() {
+            // Load daily habits
+            ['water', 'affirmation', 'hobby', 'hair'].forEach(habit => {
+                const savedDates = loadData(habit + '-checked');
+                if (savedDates) {
+                    savedDates.forEach(date => {
+                        const dayBox = document.querySelector(`#${habit}-calendar .day-box[data-date="${date}"]`);
+                        if (dayBox) {
+                            dayBox.classList.add('checked');
+                        }
+                    });
+                    updateStats(habit + '-calendar');
+                }
+            });
+
+            // Load weekly habits
+            ['activity', 'journal'].forEach(habit => {
+                const savedWeeks = loadData(habit + '-checked');
+                if (savedWeeks) {
+                    savedWeeks.forEach(week => {
+                        const weekBox = document.querySelector(`#${habit}-calendar .week-box[data-week="${week}"]`);
+                        if (weekBox) {
+                            weekBox.classList.add('checked');
+                        }
+                    });
+                    updateWeeklyStats(habit + '-calendar');
+                }
+            });
+
+            // Load reflections
+            const savedReflections = loadData('reflections');
+            if (savedReflections) {
+                savedReflections.forEach(reflection => {
+                    createReflectionCard(reflection.month, reflection.text);
+                });
+            }
+        }
+
+        function saveCheckedDates(calendarId) {
+            const calendar = document.getElementById(calendarId);
+            const checkedBoxes = calendar.querySelectorAll('.day-box.checked');
+            const dates = Array.from(checkedBoxes).map(box => box.dataset.date);
+            const habitName = calendarId.replace('-calendar', '');
+            saveData(habitName + '-checked', dates);
+        }
+
+        function saveCheckedWeeks(calendarId) {
+            const calendar = document.getElementById(calendarId);
+            const checkedBoxes = calendar.querySelectorAll('.week-box.checked');
+            const weeks = Array.from(checkedBoxes).map(box => box.dataset.week);
+            const habitName = calendarId.replace('-calendar', '');
+            saveData(habitName + '-checked', weeks);
+        }
+
+        function saveReflections() {
+            const reflections = [];
+            document.querySelectorAll('.reflection-card').forEach(card => {
+                const month = card.querySelector('.reflection-month').textContent;
+                const text = card.querySelector('.reflection-content').textContent;
+                reflections.push({ month, text });
+            });
+            saveData('reflections', reflections);
+        }
+
+        // Monthly Reflections Board Functions
+        function openReflectionModal() {
+            document.getElementById('reflection-modal').classList.add('active');
+        }
+
+        function closeReflectionModal() {
+            document.getElementById('reflection-modal').classList.remove('active');
+            document.getElementById('reflection-month').value = '';
+            document.getElementById('reflection-text').value = '';
+        }
+
+        function createReflectionCard(month, text) {
+            const reflectionsBoard = document.getElementById('reflections-board');
+            
+            const card = document.createElement('div');
+            card.className = 'reflection-card';
+            
+            card.innerHTML = `
+                <div class="reflection-card-header">
+                    <div class="reflection-month">${month}</div>
+                    <button class="delete-reflection" onclick="deleteReflection(this)">×</button>
+                </div>
+                <div class="reflection-content">${text}</div>
+            `;
+            
+            reflectionsBoard.appendChild(card);
+        }
+
+        function saveReflection() {
+            const month = document.getElementById('reflection-month').value;
+            const text = document.getElementById('reflection-text').value;
+
+            if (!month || !text.trim()) {
+                alert('Please select a month and write your reflection!');
+                return;
+            }
+
+            createReflectionCard(month, text);
+            saveReflections();
+            closeReflectionModal();
+        }
+
+        function deleteReflection(button) {
+            if (confirm('Are you sure you want to delete this reflection?')) {
+                button.closest('.reflection-card').remove();
+                saveReflections();
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('reflection-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeReflectionModal();
+            }
+        });
+    </script>
+</body>
+</html>
