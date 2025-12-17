@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Vegan Recipe Collection</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #fff5f7 0%, #f0fdf4 100%);
+            padding: 20px 10px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #ec4899;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #86efac;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        
+        .decorative-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+            font-size: 1.8em;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #ec4899, #86efac);
+            color: white;
+            text-decoration: none;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(236, 72, 153, 0.3);
+        }
+        
+        .add-recipe-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .add-recipe-btn {
+            background: linear-gradient(135deg, #ec4899, #86efac);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 12px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(236, 72, 153, 0.3);
+        }
+        
+        .add-recipe-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4);
+        }
+        
+        .recipes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .recipe-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 3px solid #fbcfe8;
+        }
+        
+        .recipe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
+        }
+        
+        .recipe-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 3px solid #86efac;
+        }
+        
+        .recipe-content {
+            padding: 20px;
+        }
+        
+        .recipe-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+        
+        .recipe-name {
+            color: #db2777;
+            font-size: 1.3em;
+            font-weight: 700;
+            flex: 1;
+        }
+        
+        .delete-recipe {
+            background: #ef4444;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+        
+        .delete-recipe:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+        
+        .recipe-time {
+            color: #86efac;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+        
+        .recipe-section {
+            margin-bottom: 15px;
+        }
+        
+        .recipe-section h4 {
+            color: #ec4899;
+            font-size: 1em;
+            margin-bottom: 8px;
+        }
+        
+        .recipe-section p,
+        .recipe-section ul {
+            color: #374151;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        
+        .recipe-section ul {
+            list-style-position: inside;
+            padding-left: 5px;
+        }
+        
+        .recipe-section li {
+            margin-bottom: 5px;
+        }
+        
+        .recipe-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .recipe-modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-content h3 {
+            color: #ec4899;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #db2777;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #fbcfe8;
+            border-radius: 10px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 0.95em;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ec4899;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .photo-option {
+            position: relative;
+            cursor: pointer;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .photo-option:hover {
+            border-color: #86efac;
+            transform: scale(1.05);
+        }
+        
+        .photo-option.selected {
+            border-color: #ec4899;
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.5);
+        }
+        
+        .photo-option img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .photo-option .checkmark {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ec4899;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .photo-option.selected .checkmark {
+            display: flex;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        
+        .modal-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-btn.save {
+            background: linear-gradient(135deg, #ec4899, #86efac);
+            color: white;
+        }
+        
+        .modal-btn.cancel {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        
+        .modal-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+            border: 3px dashed #fbcfe8;
+        }
+        
+        .empty-state h3 {
+            color: #ec4899;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            color: #86efac;
+            font-size: 1.1em;
+        }
+        
+        @media (max-width: 768px) {
+            .recipes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .photo-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 My Vegan Recipe Collection 🌱</h1>
+            <p>Healthy, Happy & Delicious Plant-Based Meals</p>
+            <div class="decorative-icons">
+                <span>🥗</span>
+                <span>🥑</span>
+                <span>🍓</span>
+                <span>🥕</span>
+                <span>🌿</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-btn">🏠 Back to Habit Tracker</a>
+            </div>
+        </div>
+
+        <div class="add-recipe-section">
+            <button class="add-recipe-btn" onclick="openRecipeModal()">+ Add New Recipe</button>
+        </div>
+
+        <div class="recipes-grid" id="recipes-grid">
+            <div class="empty-state">
+                <h3>No recipes yet! 🌸</h3>
+                <p>Click "Add New Recipe" to start building your collection</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recipe Modal -->
+    <div class="recipe-modal" id="recipe-modal">
+        <div class="modal-content">
+            <h3>✨ Add New Recipe ✨</h3>
+            
+            <div class="form-group">
+                <label>Recipe Name</label>
+                <input type="text" id="recipe-name" placeholder="e.g., Creamy Avocado Pasta">
+            </div>
+            
+            <div class="form-group">
+                <label>Prep & Cook Time</label>
+                <input type="text" id="recipe-time" placeholder="e.g., Prep: 10 min | Cook: 15 min">
+            </div>
+            
+            <div class="form-group">
+                <label>Ingredients (one per line)</label>
+                <textarea id="recipe-ingredients" placeholder="2 ripe avocados
+1 cup cherry tomatoes
+250g pasta
+Fresh basil
+Salt & pepper"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Instructions</label>
+                <textarea id="recipe-instructions" placeholder="1. Cook pasta according to package instructions
+2. Blend avocados with garlic and lemon
+3. Toss pasta with avocado sauce
+4. Top with cherry tomatoes and basil"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Choose a Photo</label>
+                <div class="photo-grid" id="photo-grid">
+                    <!-- Photos will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" onclick="closeRecipeModal()">Cancel</button>
+                <button class="modal-btn save" onclick="saveRecipe()">Save Recipe</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 5 beautiful aesthetic food images - embedded SVGs that work offline!
+        const photoOptions = [
+            {
+                url: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZDEiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmNlN2YzO3N0b3Atb3BhY2l0eToxIiAvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNkY2ZjZTc7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCNncmFkMSkiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjE1MCIgZm9udC1zaXplPSIxMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPvCfpZc8L3RleHQ+Cjwvc3ZnPg==",
+                name: "Option 1"
+            },
+            {
+                url: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZDIiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZGNmY2U3O3N0b3Atb3BhY2l0eToxIiAvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM4NmVmYWM7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCNncmFkMikiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjE1MCIgZm9udC1zaXplPSIxMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPvCfpZE8L3RleHQ+Cjwvc3ZnPg==",
+                name: "Option 2"
+            },
+            {
+                url: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZDMiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmNlN2YzO3N0b3Atb3BhY2l0eToxIiAvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNmYmNmZTg7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCNncmFkMykiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjE1MCIgZm9udC1zaXplPSIxMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPvCfjZM8L3RleHQ+Cjwvc3ZnPg==",
+                name: "Option 3"
+            },
+            {
+                url: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZDQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmVkN2FhO3N0b3Atb3BhY2l0eToxIiAvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM4NmVmYWM7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCNncmFkNCkiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjE1MCIgZm9udC1zaXplPSIxMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPvCfpZU8L3RleHQ+Cjwvc3ZnPg==",
+                name: "Option 4"
+            },
+            {
+                url: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZDUiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZGNmY2U3O3N0b3Atb3BhY2l0eToxIiAvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNkNGYxZjQ7c3RvcC1vcGFjaXR5OjEiIC8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCNncmFkNSkiLz4KICA8dGV4dCB4PSIyMDAiIHk9IjE1MCIgZm9udC1zaXplPSIxMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPvCfjL88L3RleHQ+Cjwvc3ZnPg==",
+                name: "Option 5"
+            }
+        ];
+
+        let selectedPhoto = null;
+
+        // Initialize photo grid
+        function initializePhotoGrid() {
+            const photoGrid = document.getElementById('photo-grid');
+            photoGrid.innerHTML = '';
+            
+            photoOptions.forEach((photo, index) => {
+                const photoOption = document.createElement('div');
+                photoOption.className = 'photo-option';
+                photoOption.onclick = () => selectPhoto(index);
+                
+                const img = document.createElement('img');
+                img.src = photo.url;
+                img.alt = photo.name;
+                
+                const checkmark = document.createElement('div');
+                checkmark.className = 'checkmark';
+                checkmark.textContent = '✓';
+                
+                photoOption.appendChild(img);
+                photoOption.appendChild(checkmark);
+                
+                photoGrid.appendChild(photoOption);
+            });
+        }
+
+        function selectPhoto(index) {
+            // Remove previous selection
+            document.querySelectorAll('.photo-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Select new photo
+            const options = document.querySelectorAll('.photo-option');
+            if (options[index]) {
+                options[index].classList.add('selected');
+                selectedPhoto = photoOptions[index].url;
+            }
+        }
+
+        function openRecipeModal() {
+            document.getElementById('recipe-modal').classList.add('active');
+            initializePhotoGrid();
+        }
+
+        function closeRecipeModal() {
+            document.getElementById('recipe-modal').classList.remove('active');
+            clearForm();
+        }
+
+        function clearForm() {
+            document.getElementById('recipe-name').value = '';
+            document.getElementById('recipe-time').value = '';
+            document.getElementById('recipe-ingredients').value = '';
+            document.getElementById('recipe-instructions').value = '';
+            selectedPhoto = null;
+            document.querySelectorAll('.photo-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+        }
+
+        function saveRecipe() {
+            const name = document.getElementById('recipe-name').value.trim();
+            const time = document.getElementById('recipe-time').value.trim();
+            const ingredients = document.getElementById('recipe-ingredients').value.trim();
+            const instructions = document.getElementById('recipe-instructions').value.trim();
+
+            if (!name || !time || !ingredients || !instructions) {
+                alert('Please fill in all fields!');
+                return;
+            }
+
+            if (!selectedPhoto) {
+                alert('Please select a photo!');
+                return;
+            }
+
+            const recipe = {
+                name,
+                time,
+                ingredients,
+                instructions,
+                photo: selectedPhoto,
+                id: Date.now()
+            };
+
+            addRecipeToGrid(recipe);
+            saveRecipesToStorage();
+            closeRecipeModal();
+        }
+
+        function addRecipeToGrid(recipe) {
+            const grid = document.getElementById('recipes-grid');
+            
+            // Remove empty state if it exists
+            const emptyState = grid.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            const card = document.createElement('div');
+            card.className = 'recipe-card';
+            card.dataset.id = recipe.id;
+
+            const ingredientsList = recipe.ingredients.split('\n')
+                .filter(i => i.trim())
+                .map(i => `<li>${i.trim()}</li>`)
+                .join('');
+
+            const img = document.createElement('img');
+            img.src = recipe.photo;
+            img.alt = recipe.name;
+            img.className = 'recipe-image';
+            img.onerror = function() {
+                this.src = 'https://via.placeholder.com/400x300/fce7f3/ec4899?text=' + encodeURIComponent(recipe.name);
+            };
+
+            const content = document.createElement('div');
+            content.className = 'recipe-content';
+            content.innerHTML = `
+                <div class="recipe-header">
+                    <div class="recipe-name">${recipe.name}</div>
+                    <button class="delete-recipe" onclick="deleteRecipe(${recipe.id})">×</button>
+                </div>
+                <div class="recipe-time">⏱️ ${recipe.time}</div>
+                <div class="recipe-section">
+                    <h4>🥗 Ingredients</h4>
+                    <ul>${ingredientsList}</ul>
+                </div>
+                <div class="recipe-section">
+                    <h4>👩‍🍳 Instructions</h4>
+                    <p>${recipe.instructions.replace(/\n/g, '<br>')}</p>
+                </div>
+            `;
+
+            card.appendChild(img);
+            card.appendChild(content);
+            grid.appendChild(card);
+        }
+
+        function deleteRecipe(id) {
+            if (confirm('Are you sure you want to delete this recipe?')) {
+                const card = document.querySelector(`[data-id="${id}"]`);
+                if (card) {
+                    card.remove();
+                    saveRecipesToStorage();
+                    
+                    // Add empty state back if no recipes
+                    const grid = document.getElementById('recipes-grid');
+                    if (grid.children.length === 0) {
+                        grid.innerHTML = `
+                            <div class="empty-state">
+                                <h3>No recipes yet! 🌸</h3>
+                                <p>Click "Add New Recipe" to start building your collection</p>
+                            </div>
+                        `;
+                    }
+                }
+            }
+        }
+
+        function saveRecipesToStorage() {
+            const recipes = [];
+            document.querySelectorAll('.recipe-card').forEach(card => {
+                const id = parseInt(card.dataset.id);
+                const name = card.querySelector('.recipe-name').textContent;
+                const time = card.querySelector('.recipe-time').textContent.replace('⏱️ ', '');
+                const photo = card.querySelector('.recipe-image').src;
+                
+                const ingredientsItems = card.querySelectorAll('.recipe-section ul li');
+                const ingredients = Array.from(ingredientsItems).map(li => li.textContent).join('\n');
+                
+                const instructionsElement = card.querySelectorAll('.recipe-section p')[0];
+                const instructions = instructionsElement ? instructionsElement.innerHTML.replace(/<br>/g, '\n') : '';
+
+                recipes.push({ id, name, time, ingredients, instructions, photo });
+            });
+            
+            try {
+                localStorage.setItem('vegan-recipes', JSON.stringify(recipes));
+                console.log('Recipes saved successfully:', recipes.length);
+            } catch (e) {
+                console.error('Error saving recipes:', e);
+                alert('Error saving recipes. Please try again.');
+            }
+        }
+
+        function loadRecipes() {
+            try {
+                const saved = localStorage.getItem('vegan-recipes');
+                if (saved) {
+                    const recipes = JSON.parse(saved);
+                    console.log('Loading recipes:', recipes.length);
+                    if (recipes.length > 0) {
+                        const grid = document.getElementById('recipes-grid');
+                        grid.innerHTML = '';
+                        recipes.forEach(recipe => addRecipeToGrid(recipe));
+                    }
+                }
+            } catch (e) {
+                console.error('Error loading recipes:', e);
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('recipe-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeRecipeModal();
+            }
+        });
+
+        // Load recipes on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, initializing...');
+            loadRecipes();
+        });
+    </script>
+</body>
+</html>
